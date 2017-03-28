@@ -1,0 +1,71 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CS432ProjectAuthenticationServer
+{
+    public class User
+    {
+        String username;
+        Socket socket;
+        int NumberOfPacketsToReceive;
+        private byte[] randomNumberSent;
+        private string PublicKeyXmlString;
+
+
+        public User(String u, Socket s)
+        {
+            username = u;
+            socket = s;
+        }
+
+        public void setUserName(String s)
+        {
+            username = s;
+        }
+
+        public string getUserName()
+        {
+            return username;
+        }
+
+        public Socket getSocket()
+        {
+            return socket;
+        }
+
+        public void setPacketNumber(int i)
+        {
+            NumberOfPacketsToReceive = i;
+        }
+
+        public int getPacketNumber()
+        {
+            return NumberOfPacketsToReceive;
+        }
+
+        public void setRandomNumberSent(byte[] number)
+        {
+            randomNumberSent = number;
+        }
+
+        public byte [] getRandomNumberSent()
+        {
+            return randomNumberSent;
+        }
+
+        public void setPublicKeyXmlString(string xmlString)
+        {
+            PublicKeyXmlString = xmlString;
+        }
+
+        public string getPublicKeyXmlString()
+        {
+            return PublicKeyXmlString;
+        }
+
+    }
+}

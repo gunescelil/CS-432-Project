@@ -30,5 +30,8 @@ namespace CS432TermProject
         public const string RECEIVED_RANDOM_NUMBER_SUCCESSFULLY = "113";
         public const string RECEIVED_RANDOM_NUMBER_SUCCESSFULLY_ACK = "114";
 
+        public const string WILL_SEND_SIGNED_ANSWER_MESSAGE = "115";
+        public const string WILL_SEND_SIGNED_ANSWER_MESSAGE_OK = "116";
+
     }
 }

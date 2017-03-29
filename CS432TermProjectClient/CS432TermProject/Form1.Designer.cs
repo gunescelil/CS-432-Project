@@ -37,7 +37,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.btnConnect = new System.Windows.Forms.Button();
-            this.monitor = new System.Windows.Forms.RichTextBox();
+            this.rtbMonitor = new System.Windows.Forms.RichTextBox();
             this.monitorLabel = new System.Windows.Forms.Label();
             this.tbAServerPubKeyFile = new System.Windows.Forms.TextBox();
             this.btnBrowseAServerPublicKey = new System.Windows.Forms.Button();
@@ -121,13 +121,13 @@
             this.btnConnect.UseVisualStyleBackColor = true;
             this.btnConnect.Click += new System.EventHandler(this.Connect_Click);
             // 
-            // monitor
+            // rtbMonitor
             // 
-            this.monitor.Location = new System.Drawing.Point(475, 29);
-            this.monitor.Name = "monitor";
-            this.monitor.Size = new System.Drawing.Size(374, 107);
-            this.monitor.TabIndex = 9;
-            this.monitor.Text = "";
+            this.rtbMonitor.Location = new System.Drawing.Point(475, 29);
+            this.rtbMonitor.Name = "rtbMonitor";
+            this.rtbMonitor.Size = new System.Drawing.Size(374, 107);
+            this.rtbMonitor.TabIndex = 9;
+            this.rtbMonitor.Text = "";
             // 
             // monitorLabel
             // 
@@ -202,7 +202,7 @@
             this.Controls.Add(this.btnBrowseAServerPublicKey);
             this.Controls.Add(this.tbAServerPubKeyFile);
             this.Controls.Add(this.monitorLabel);
-            this.Controls.Add(this.monitor);
+            this.Controls.Add(this.rtbMonitor);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -230,7 +230,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnConnect;
-        private System.Windows.Forms.RichTextBox monitor;
+        private System.Windows.Forms.RichTextBox rtbMonitor;
         private System.Windows.Forms.Label monitorLabel;
         private System.Windows.Forms.TextBox tbAServerPubKeyFile;
         private System.Windows.Forms.Button btnBrowseAServerPublicKey;

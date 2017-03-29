@@ -33,6 +33,9 @@
             this.btnStartServer = new System.Windows.Forms.Button();
             this.rtbMonitor = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.btnBrowse = new System.Windows.Forms.Button();
+            this.tbServerPrivateKeyPath = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // tbPortNumber
@@ -78,11 +81,40 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "Monitor";
             // 
+            // btnBrowse
+            // 
+            this.btnBrowse.Location = new System.Drawing.Point(325, 245);
+            this.btnBrowse.Name = "btnBrowse";
+            this.btnBrowse.Size = new System.Drawing.Size(114, 30);
+            this.btnBrowse.TabIndex = 5;
+            this.btnBrowse.Text = "Browse";
+            this.btnBrowse.UseVisualStyleBackColor = true;
+            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
+            // 
+            // tbServerPrivateKeyPath
+            // 
+            this.tbServerPrivateKeyPath.Location = new System.Drawing.Point(34, 245);
+            this.tbServerPrivateKeyPath.Name = "tbServerPrivateKeyPath";
+            this.tbServerPrivateKeyPath.Size = new System.Drawing.Size(219, 22);
+            this.tbServerPrivateKeyPath.TabIndex = 6;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(34, 216);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(159, 17);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Server Private Key Path";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(577, 403);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.tbServerPrivateKeyPath);
+            this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.rtbMonitor);
             this.Controls.Add(this.btnStartServer);
@@ -102,6 +134,9 @@
         private System.Windows.Forms.Button btnStartServer;
         private System.Windows.Forms.RichTextBox rtbMonitor;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnBrowse;
+        private System.Windows.Forms.TextBox tbServerPrivateKeyPath;
+        private System.Windows.Forms.Label label3;
     }
 }
 

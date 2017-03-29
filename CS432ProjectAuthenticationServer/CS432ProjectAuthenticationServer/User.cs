@@ -14,6 +14,7 @@ namespace CS432ProjectAuthenticationServer
         int NumberOfPacketsToReceive;
         private byte[] randomNumberSent;
         private string PublicKeyXmlString;
+        bool authenticated;
 
 
         public User(String u, Socket s)
@@ -52,7 +53,7 @@ namespace CS432ProjectAuthenticationServer
             randomNumberSent = number;
         }
 
-        public byte [] getRandomNumberSent()
+        public byte [] getRandomNumberSentToUser()
         {
             return randomNumberSent;
         }
@@ -65,6 +66,16 @@ namespace CS432ProjectAuthenticationServer
         public string getPublicKeyXmlString()
         {
             return PublicKeyXmlString;
+        }
+
+        public void setAuthenticated(bool value)
+        {
+            authenticated = value;
+        }
+
+        public bool getAuthenticated()
+        {
+            return authenticated;
         }
 
     }

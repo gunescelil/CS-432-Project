@@ -15,6 +15,7 @@ namespace CS432ProjectAuthenticationServer
         private byte[] randomNumberSent;
         private string PublicKeyXmlString;
         bool authenticated;
+        private string connectionTime;
 
 
         public User(String u, Socket s)
@@ -77,6 +78,22 @@ namespace CS432ProjectAuthenticationServer
         {
             return authenticated;
         }
+
+        public override string ToString()
+        {
+            return username + " "+ connectionTime;
+        }
+
+        public void setConnectionTime(string time)
+        {
+            connectionTime = time;
+        }
+
+        public string getConnectionTime()
+        {
+            return connectionTime;
+        }
+
 
     }
 }

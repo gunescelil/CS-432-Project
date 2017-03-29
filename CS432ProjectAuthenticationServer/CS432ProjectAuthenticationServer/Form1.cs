@@ -25,15 +25,15 @@ namespace CS432ProjectAuthenticationServer
         static TextBox serverPublicPrivateKeyFilePathTextBox;
         static int PortNumber;
 
+        public ListBox userListBox;
+
         static Socket possibleClient;
 
         static Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         static List<Socket> socketList = new List<Socket>();
-        static List<string> nameList = new List<string>();
-        static List<User> userList = new List<User>();
+        static BindingList<User> userList = new BindingList<User>();
 
         Thread thrAccept;
-        Thread thrMessage;
 
         static bool listening = false;
         static bool terminating = false;
@@ -57,7 +57,7 @@ namespace CS432ProjectAuthenticationServer
             serverStartButton = (Button)btnStartServer;
             browseServerPrivateKeyFileButton = (Button)btnBrowse;
             serverPublicPrivateKeyFilePathTextBox = (TextBox)tbServerPrivateKeyPath;
-
+            userListBox = (ListBox)lbConnectedUsers;
         }
 
         private void btnStartServer_Click(object sender, EventArgs e)
@@ -205,8 +205,16 @@ namespace CS432ProjectAuthenticationServer
                     byte[] signedMessageNumber = null;
                     if(user.getAuthenticated() == true) // sign the MessageNumber.USER_AUTHENTICATED message
                     {
+                        // Now the user is authenticated and will be added to the user list.
                         signedMessageNumber = MyCrypto.signWithRSA(MessageNumber.USER_AUTHENTICATED, 2048,
                                 serverPublicPrivateKeyXmlString);
+                        monitor.AppendText("A client named " + user.getUserName() + " is accepted \n");
+                        string connectionTime = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
+                        user.setConnectionTime(connectionTime);
+                        userList.Add(user);
+                        socketList.Add(user.getSocket());
+                        userListBox.DataSource = userList;
+                        
                     }
                     else // sign the MessageNumber.USER_REJECTED_TO_AUTHENTICATE message
                     {
@@ -220,7 +228,14 @@ namespace CS432ProjectAuthenticationServer
                     sendMessageNumber(MessageNumber.RECEIVED_RANDOM_NUMBER_SUCCESSFULLY_ACK, user);
                     break;
 
-
+                case MessageNumber.WILL_DISCONNECT:
+                    sendMessageNumber(MessageNumber.WILL_DISCONNECT_OK,user);
+                    // Remove the user related information from the lists. And close the connection.
+                    socketList.Remove(user.getSocket());
+                    userList.Remove(user);
+                    user.getSocket().Close();                   
+                    monitor.AppendText("Client " + user.getUserName() + " disconnected\n");
+                    break;
 
             }
         }
@@ -248,37 +263,20 @@ namespace CS432ProjectAuthenticationServer
             String possibleUserName = Encoding.Default.GetString(namebuffer, 0, receivedNameCharCount);
             user.setUserName(possibleUserName);
 
-            if (checkUserNameExists(user)) // User name exists
+            if (checkUserNameExists(user)) // User name exists Remove this client as it is already connected
             {
                 byte[] buffer = Encoding.Default.GetBytes(MessageNumber.USER_ALREADY_CONNECTED.ToString());
                 monitor.AppendText("A client named " + user.getUserName() + " is rejected to connect \n");
                 user.getSocket().Send(buffer);
                 user.getSocket().Close();
             }
-            else if (!checkUserNameExists(user)) // User name does not exist
-            {
-                ////byte[] buffer = Encoding.Default.GetBytes(MessageNumber.USER_ACCEPTED_TO_CONNECT.ToString());
-                ////monitor.AppendText("A client named " + user.getUserName() + " is accepted \n");
-                ////user.getSocket().Send(buffer);
-                //userList.Add(user);
-                //socketList.Add(user.getSocket());
-                //nameList.Add(user.getUserName());
-
-                //// Directory aç
-
-                //String myDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Server\\" + user.getUserName();
-                //System.IO.Directory.CreateDirectory(myDir);
-
-                //String toDir = myDir + "\\" + "to";
-                //String fromDir = myDir + "\\" + "from";
-                //System.IO.Directory.CreateDirectory(toDir);
-                //System.IO.Directory.CreateDirectory(fromDir);
-            }
         }
 
 
         public bool checkUserNameExists(User user)
         {
+            //bool attr1_exist = MyList.Any(x => x.attr1.Contains("aaa"));
+            //bool x = userList.Any(y => y.getUserName().Contains(user.getUserName()));
             bool result = false;
             for (int i = 0; i < userList.Count; i++)
             {
@@ -286,12 +284,6 @@ namespace CS432ProjectAuthenticationServer
                     result = true;
             }
             return result;
-        }
-
-        static string generateHexStringFromByteArray(byte[] input)
-        {
-            string hexString = BitConverter.ToString(input);
-            return hexString.Replace("-", "");
         }
 
         // Returns the received 
@@ -330,6 +322,17 @@ namespace CS432ProjectAuthenticationServer
             // Display for 3 seconds.
             notification.ShowBalloonTip(3);
             notification.Dispose();
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            for (int i = 0; i< userList.Count;i++)
+            {
+                sendMessageNumber(MessageNumber.SERVER_WILL_CLOSE, userList[i]);
+                userList[i].getSocket().Close();             
+            }
+            if (server.Connected) server.Close();
+
         }
     }
 }

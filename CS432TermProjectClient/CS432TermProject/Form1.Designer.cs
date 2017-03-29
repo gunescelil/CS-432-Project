@@ -45,6 +45,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.btnBrowseUserKeyPairFile = new System.Windows.Forms.Button();
             this.tbUserKeyPairFile = new System.Windows.Forms.TextBox();
+            this.btnDisconnect = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tbUserName
@@ -60,6 +61,7 @@
             this.tbPassword.Name = "tbPassword";
             this.tbPassword.Size = new System.Drawing.Size(136, 22);
             this.tbPassword.TabIndex = 1;
+            this.tbPassword.UseSystemPasswordChar = true;
             // 
             // tbAuthenticationServerIP
             // 
@@ -125,7 +127,7 @@
             // 
             this.rtbMonitor.Location = new System.Drawing.Point(475, 29);
             this.rtbMonitor.Name = "rtbMonitor";
-            this.rtbMonitor.Size = new System.Drawing.Size(374, 107);
+            this.rtbMonitor.Size = new System.Drawing.Size(414, 334);
             this.rtbMonitor.TabIndex = 9;
             this.rtbMonitor.Text = "";
             // 
@@ -142,12 +144,12 @@
             // 
             this.tbAServerPubKeyFile.Location = new System.Drawing.Point(22, 331);
             this.tbAServerPubKeyFile.Name = "tbAServerPubKeyFile";
-            this.tbAServerPubKeyFile.Size = new System.Drawing.Size(314, 22);
+            this.tbAServerPubKeyFile.Size = new System.Drawing.Size(237, 22);
             this.tbAServerPubKeyFile.TabIndex = 11;
             // 
             // btnBrowseAServerPublicKey
             // 
-            this.btnBrowseAServerPublicKey.Location = new System.Drawing.Point(371, 331);
+            this.btnBrowseAServerPublicKey.Location = new System.Drawing.Point(293, 326);
             this.btnBrowseAServerPublicKey.Name = "btnBrowseAServerPublicKey";
             this.btnBrowseAServerPublicKey.Size = new System.Drawing.Size(136, 32);
             this.btnBrowseAServerPublicKey.TabIndex = 12;
@@ -175,7 +177,7 @@
             // 
             // btnBrowseUserKeyPairFile
             // 
-            this.btnBrowseUserKeyPairFile.Location = new System.Drawing.Point(371, 252);
+            this.btnBrowseUserKeyPairFile.Location = new System.Drawing.Point(293, 247);
             this.btnBrowseUserKeyPairFile.Name = "btnBrowseUserKeyPairFile";
             this.btnBrowseUserKeyPairFile.Size = new System.Drawing.Size(136, 32);
             this.btnBrowseUserKeyPairFile.TabIndex = 15;
@@ -187,14 +189,25 @@
             // 
             this.tbUserKeyPairFile.Location = new System.Drawing.Point(22, 252);
             this.tbUserKeyPairFile.Name = "tbUserKeyPairFile";
-            this.tbUserKeyPairFile.Size = new System.Drawing.Size(314, 22);
+            this.tbUserKeyPairFile.Size = new System.Drawing.Size(237, 22);
             this.tbUserKeyPairFile.TabIndex = 14;
+            // 
+            // btnDisconnect
+            // 
+            this.btnDisconnect.Location = new System.Drawing.Point(293, 138);
+            this.btnDisconnect.Name = "btnDisconnect";
+            this.btnDisconnect.Size = new System.Drawing.Size(136, 32);
+            this.btnDisconnect.TabIndex = 17;
+            this.btnDisconnect.Text = "Disconnect";
+            this.btnDisconnect.UseVisualStyleBackColor = true;
+            this.btnDisconnect.Click += new System.EventHandler(this.btnDisconnect_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(922, 389);
+            this.Controls.Add(this.btnDisconnect);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.btnBrowseUserKeyPairFile);
             this.Controls.Add(this.tbUserKeyPairFile);
@@ -213,7 +226,8 @@
             this.Controls.Add(this.tbPassword);
             this.Controls.Add(this.tbUserName);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Client";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -238,6 +252,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnBrowseUserKeyPairFile;
         private System.Windows.Forms.TextBox tbUserKeyPairFile;
+        private System.Windows.Forms.Button btnDisconnect;
     }
 }
 

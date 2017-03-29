@@ -31,5 +31,10 @@ namespace CS432ProjectAuthenticationServer
         public const string WILL_SEND_SIGNED_ANSWER_MESSAGE = "115";
         public const string WILL_SEND_SIGNED_ANSWER_MESSAGE_OK = "116";
 
+        public const string WILL_DISCONNECT = "117";
+        public const string WILL_DISCONNECT_OK = "118";
+
+        public const string SERVER_WILL_CLOSE = "119";
+
     }
 }

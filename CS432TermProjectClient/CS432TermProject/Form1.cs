@@ -24,6 +24,7 @@ namespace CS432TermProject
 
         // Buttons
         Button connectButton;
+        Button disconnectButton;
 
         // TextBox
         TextBox usernameTextBox, passwordTextBox, authenticationServerIPTextBox, authenticationServerPortTextBox;
@@ -60,12 +61,14 @@ namespace CS432TermProject
             userKeyPairFilePathTextBox = (TextBox)tbUserKeyPairFile;
             authenticationServerPubKeyFilePathTextBox = (TextBox)tbAServerPubKeyFile;
             Monitor = (RichTextBox) rtbMonitor;
-
+            disconnectButton = (Button)btnDisconnect;
+            disconnectButton.Enabled = false;
         }
 
 
         private void Connect_Click(object sender, EventArgs e)
         {
+            
             myCrypto = new MyCryptography();
             if ( authenticationServerPubKeyFilePathTextBox.Text.Equals("") || userKeyPairFilePathTextBox.Text.Equals("") )
             { // The user did not choose the needed files for encryption. Make him choose.
@@ -73,6 +76,16 @@ namespace CS432TermProject
             }
             else
             { // User choosed the needed files
+
+                connectButton.Enabled = false;
+                disconnectButton.Enabled = true;
+                authenticationServerIPTextBox.Enabled = false;
+                authenticationServerPortTextBox.Enabled = false;
+                passwordTextBox.Enabled = false;
+                usernameTextBox.Enabled = false;
+                userKeyPairFilePathTextBox.Enabled = false;
+                authenticationServerPubKeyFilePathTextBox.Enabled = false;
+
                 username = usernameTextBox.Text;
                 Regex regex = new Regex("^([a-z][a-z0-9]+|[a-z]){1,25}$");
 
@@ -95,48 +108,84 @@ namespace CS432TermProject
                 PATH_FOR_AUTHENTICATION_SERVER_PUB_KEY = authenticationServerPubKeyFilePathTextBox.Text;
 
                 string encryptedXML2048BitKey = readFromFile(PATH_FOR_USER_KEY_PAIR);
+                Monitor.AppendText("Encrypted XML 2048 Bit RSA Private_Public Key Pair:\n " + encryptedXML2048BitKey +"\n");
                 byte[] byteArrayOfEncryptedXML2048BitKey = myCrypto.StringToByteArray(encryptedXML2048BitKey);
-                string stringVersionOfEncryptedXML2048BitKey = Encoding.Default.GetString(byteArrayOfEncryptedXML2048BitKey);             
-                try
-                {
-                    // TODO: the xml is not correctly get from the 
+                Monitor.AppendText("Hex string of encrypted XML 2048 Bit RSA Private_Public Key Pair: \n"
+                        + myCrypto.generateHexStringFromByteArray(byteArrayOfEncryptedXML2048BitKey ) + "\n");
+                string stringVersionOfEncryptedXML2048BitKey = Encoding.Default.GetString(byteArrayOfEncryptedXML2048BitKey);
+                try {
                     decryptedXML2048BitKey = myCrypto.decryptWithAES128(stringVersionOfEncryptedXML2048BitKey, KEY, IV);
+                    Monitor.AppendText("Hex String of decrypted XML 2048 Bit Public_Private Key Pair: \n" 
+                            + myCrypto.generateHexStringFromByteArray(decryptedXML2048BitKey) +"\n");
                     decryptedXml2048BitKeyString = Encoding.Default.GetString(decryptedXML2048BitKey);
+                    Monitor.AppendText("String version of decrypted XML 2048 Bit Public_Private Key Pair: \n"
+                            + decryptedXml2048BitKeyString + "\n");
+
                 }
-                catch (Exception exc )
+                catch (Exception ex)
                 {
-                    rtbMonitor.AppendText("Password entered is incorrect");
-                    // TODO: Handle the exception and return the user to the password entering phase again
+                    connectButton.Enabled = true;
+                    disconnectButton.Enabled = false;
+                    authenticationServerIPTextBox.Enabled = true;
+                    authenticationServerPortTextBox.Enabled = true;
+                    passwordTextBox.Enabled = true;
+                    usernameTextBox.Enabled = true;
+                    authenticationServerPubKeyFilePathTextBox.Enabled = true;
+                    userKeyPairFilePathTextBox.Enabled = true;                 
+                    throw (new Exception("Password is incorrect"));                   
                 }
+                
 
-                // Get the public key of server in a string
-                authenticationServerPublicKeyXmlString = File.ReadAllText(PATH_FOR_AUTHENTICATION_SERVER_PUB_KEY);
+                // If the password given from user is incorrect then  decryptedXML2048BitKey will be null
 
-
-
-                if (regex.IsMatch(username))
+                if(decryptedXML2048BitKey!=null) // Password is correct
                 {
-                    client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    authenticationServerPort = Convert.ToInt32(authenticationServerPortTextBox.Text);
-                    authenticationServerIP = authenticationServerIPTextBox.Text;
+                    // Get the public key of server in a string
+                    authenticationServerPublicKeyXmlString = File.ReadAllText(PATH_FOR_AUTHENTICATION_SERVER_PUB_KEY);
 
-                    try
+                    if (regex.IsMatch(username))
                     {
-                        client.Connect(authenticationServerIP, authenticationServerPort);
-                    }
-                    catch
-                    {
-                        rtbMonitor.AppendText("Something went wrong while connecting.\n");
-                    }
-                    // Changing UI
-                    connectButton.Enabled = false;
+                        client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                        authenticationServerPort = Convert.ToInt32(authenticationServerPortTextBox.Text);
+                        authenticationServerIP = authenticationServerIPTextBox.Text;
 
-                    SendMessageNumber(MessageNumber.AUTHENTICATION_REQUEST);
+                        try
+                        {
+                            client.Connect(authenticationServerIP, authenticationServerPort);
+                        }
+                        catch
+                        {
+                            connectButton.Enabled = true;
+                            disconnectButton.Enabled = false;
+                            authenticationServerIPTextBox.Enabled = true;
+                            authenticationServerPortTextBox.Enabled = true;
+                            passwordTextBox.Enabled = true;
+                            usernameTextBox.Enabled = true;
+                            authenticationServerPubKeyFilePathTextBox.Enabled = true;
+                            userKeyPairFilePathTextBox.Enabled = true;
+                            throw (new Exception("Ip or Port numbers may be wrong"));                            
+                        }
+                        // Changing UI
+                        
 
-                    thrMessage = new Thread(new ThreadStart(receiveMessage));
-                    thrMessage.Start();
+                        SendMessageNumber(MessageNumber.AUTHENTICATION_REQUEST);
+
+                        thrMessage = new Thread(new ThreadStart(receiveMessage));
+                        thrMessage.Start();
+                    }
                 }
-
+                else
+                {
+                    connectButton.Enabled = true;
+                    disconnectButton.Enabled = false;
+                    authenticationServerIPTextBox.Enabled = true;
+                    authenticationServerPortTextBox.Enabled = true;
+                    passwordTextBox.Enabled = true;
+                    passwordTextBox.Clear();
+                    usernameTextBox.Enabled = true;
+                    authenticationServerPubKeyFilePathTextBox.Enabled = true;
+                    userKeyPairFilePathTextBox.Enabled = true;
+                }
             }            
         }
 
@@ -233,36 +282,159 @@ namespace CS432TermProject
                     // if both of them are false. Than this message is not from the server.
                     if(authenticatonPositiveResult)
                     { // So the server authenticated the client. Client knows this message comes from the server he/she spokes.
-                        Monitor.AppendText("Server gave access to the client");
+                        Monitor.AppendText("Client connected to the server\n");
                     }
                     else if(authenticationNegativeResult)
                     { // The server did not give permission to access. Client knows this message comes from the server he/she spokes.
-                        Monitor.AppendText("Access denied");
+                        Monitor.AppendText("Access denied\n");
+                        if (client.Connected)
+                        {
+                            connected = false;
+                            client.Disconnect(false); }
+                        onAccessDenied();
                     }
                     else
                     {
-                        Monitor.AppendText("Received an unexpected message");
+                        Monitor.AppendText("Received an unexpected message\n");
                     }
 
                     break;
                 case MessageNumber.USER_ACCEPTED_TO_CONNECT:
-                    Monitor.AppendText("User is connected");
+                    Monitor.AppendText("User is connected\n");
                     break;
 
                 case MessageNumber.USER_ALREADY_CONNECTED:
-                    Monitor.AppendText("User is already connected");
+                    Monitor.AppendText("User is already connected\n");
+                    connectButton.Enabled = true;
+                    authenticationServerIPTextBox.Enabled = true;
+                    authenticationServerPortTextBox.Enabled = true;
+                    passwordTextBox.Enabled = true;
+                    usernameTextBox.Enabled = true;
+                    authenticationServerPubKeyFilePathTextBox.Enabled = true;
+                    userKeyPairFilePathTextBox.Enabled = true;
                     break;
 
                 case MessageNumber.USER_AUTHENTICATED:
-                    Monitor.AppendText("User is authenticated");
+                    Monitor.AppendText("User is authenticated\n");
                     break;
 
                 case MessageNumber.USER_REJECTED_TO_AUTHENTICATE:
-                    Monitor.AppendText("User is not authenticated");
+                    Monitor.AppendText("User is not authenticated\n");
                     break;
+
+                case MessageNumber.WILL_DISCONNECT_OK:
+                    client.Disconnect(true); // As we get new Socket in each connection. I said it wont be used again.                    
+                    break;
+                case MessageNumber.SERVER_WILL_CLOSE:
+                    // Server will close itself down. So disconnect from the server
+                    onAuthenticationServerClosedItself();
+                    break;
+
+    }
+        }
+
+        public void onAccessDenied()
+        {
+            PATH_FOR_USER_KEY_PAIR = null;
+            PATH_FOR_FSERVER_PUB_KEY = null;
+            PATH_FOR_FSERVER_PUB_KEY = null;
+            authenticationServerPublicKeyXmlString = null;
+            decryptedXML2048BitKey = null;
+            decryptedXml2048BitKeyString = null;
+            receivedRandomNumber = null;
+
+            // Enable all the buttons again.
+            connectButton.Enabled = true;
+            disconnectButton.Enabled = false;
+            authenticationServerIPTextBox.Enabled = true;
+            authenticationServerPortTextBox.Enabled = true;
+            passwordTextBox.Enabled = true;
+            usernameTextBox.Enabled = true;
+            authenticationServerPubKeyFilePathTextBox.Enabled = true;
+            userKeyPairFilePathTextBox.Enabled = true;
+        }
+
+        public void onAuthenticationServerClosedItself()
+        {
+            connected = false;
+            client.Disconnect(false);
+            PATH_FOR_USER_KEY_PAIR = null;
+            PATH_FOR_FSERVER_PUB_KEY = null;
+            PATH_FOR_FSERVER_PUB_KEY = null;
+            authenticationServerPublicKeyXmlString = null;
+            decryptedXML2048BitKey = null;
+            decryptedXml2048BitKeyString = null;
+            receivedRandomNumber = null;
+
+            // Enable all the buttons again.
+            connectButton.Enabled = true;
+            disconnectButton.Enabled = false;
+            authenticationServerIPTextBox.Enabled = true;
+            authenticationServerPortTextBox.Enabled = true;
+            passwordTextBox.Enabled = true;
+            usernameTextBox.Enabled = true;
+            authenticationServerPubKeyFilePathTextBox.Enabled = true;
+            userKeyPairFilePathTextBox.Enabled = true;
+
+            Monitor.AppendText("Server closed itself");
+        }
+
+        private void btnDisconnect_Click(object sender, EventArgs e)
+        {
+            connected = false;
+            if (client.Connected) // the client is connected. So client will be disconnected
+            {
+                // Send disconnection message to server.
+                SendMessageNumber(MessageNumber.WILL_DISCONNECT);             
+                // Clear all the private information on the memory                      
+                PATH_FOR_USER_KEY_PAIR = null;
+                PATH_FOR_FSERVER_PUB_KEY = null;
+                PATH_FOR_FSERVER_PUB_KEY = null;
+                authenticationServerPublicKeyXmlString = null;
+                decryptedXML2048BitKey = null;
+                decryptedXml2048BitKeyString = null;
+                username = null;
+                password = null;
+                receivedRandomNumber = null;
+                userKeyPairFilePathTextBox.Clear();
+                authenticationServerPubKeyFilePathTextBox.Clear();
+                authenticationServerIPTextBox.Clear();
+                authenticationServerPortTextBox.Clear();
+
+                // Enable all the buttons again.
+                connectButton.Enabled = true;
+                disconnectButton.Enabled = false;
+                authenticationServerIPTextBox.Enabled = true;
+                authenticationServerPortTextBox.Enabled = true;
+                passwordTextBox.Enabled = true;
+                passwordTextBox.Clear();
+                usernameTextBox.Enabled = true;
+                usernameTextBox.Clear();
+                authenticationServerPubKeyFilePathTextBox.Enabled = true;
+                userKeyPairFilePathTextBox.Enabled = true;
+                // Clear the monitor maybe?
+
+                Monitor.Clear();
+
+                
+            }
+            else
+            {
+                Monitor.AppendText("Client is already not connected\n ");
             }
         }
 
+      
+        // This function is called when user want to close the program by clicking on cross sign of the form.
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {         
+            if (client.Connected)
+            {
+                connected = false;
+                SendMessageNumber(MessageNumber.WILL_DISCONNECT);
+                client.Disconnect(false);
+            }
+        }
 
         public void showNotificationBalloon(string message)
         {

@@ -46,7 +46,6 @@ namespace CS432TermProject
             // set the IV
             aesObject.IV = IV;
             // create an encryptor with the settings provided
-            aesObject.Padding = PaddingMode.None;
             ICryptoTransform decryptor = aesObject.CreateDecryptor();
             byte[] result = null;
 

@@ -7,3 +7,6 @@ D:\Github for VS\CS432\CS432ProjectAuthenticationServer\CS432ProjectAuthenticati
 D:\Github for VS\CS432\CS432ProjectAuthenticationServer\CS432ProjectAuthenticationServer\obj\Debug\CS432ProjectAuthenticationServer.exe
 D:\Github for VS\CS432\CS432ProjectAuthenticationServer\CS432ProjectAuthenticationServer\obj\Debug\CS432ProjectAuthenticationServer.pdb
 D:\Github for VS\CS432\CS432ProjectAuthenticationServer\CS432ProjectAuthenticationServer\obj\Debug\CS432ProjectAuthenticationServer.csprojResolveAssemblyReference.cache
+D:\Github for VS\CS432\CS-432-Project\CS432ProjectAuthenticationServer\CS432ProjectAuthenticationServer\bin\Debug\CS432ProjectAuthenticationServer.exe.config
+D:\Github for VS\CS432\CS-432-Project\CS432ProjectAuthenticationServer\CS432ProjectAuthenticationServer\obj\Debug\CS432ProjectAuthenticationServer.exe
+D:\Github for VS\CS432\CS-432-Project\CS432ProjectAuthenticationServer\CS432ProjectAuthenticationServer\obj\Debug\CS432ProjectAuthenticationServer.pdb

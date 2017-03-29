@@ -1,0 +1,9 @@
+D:\Github for VS\CS432\CS-432-Project\CS432TermProjectClient\CS432TermProject\bin\Debug\CS432TermProject.exe.config
+D:\Github for VS\CS432\CS-432-Project\CS432TermProjectClient\CS432TermProject\obj\Debug\CS432TermProject.exe
+D:\Github for VS\CS432\CS-432-Project\CS432TermProjectClient\CS432TermProject\obj\Debug\CS432TermProject.pdb
+D:\Github for VS\CS432\CS-432-Project\CS432TermProjectClient\CS432TermProject\bin\Debug\CS432TermProject.exe
+D:\Github for VS\CS432\CS-432-Project\CS432TermProjectClient\CS432TermProject\bin\Debug\CS432TermProject.pdb
+D:\Github for VS\CS432\CS-432-Project\CS432TermProjectClient\CS432TermProject\obj\Debug\CS432TermProjectClient.csprojResolveAssemblyReference.cache
+D:\Github for VS\CS432\CS-432-Project\CS432TermProjectClient\CS432TermProject\obj\Debug\CS432TermProject.Form1.resources
+D:\Github for VS\CS432\CS-432-Project\CS432TermProjectClient\CS432TermProject\obj\Debug\CS432TermProject.Properties.Resources.resources
+D:\Github for VS\CS432\CS-432-Project\CS432TermProjectClient\CS432TermProject\obj\Debug\CS432TermProjectClient.csproj.GenerateResource.Cache

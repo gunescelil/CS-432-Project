@@ -93,13 +93,13 @@ namespace CS432TermProject
                 PATH_FOR_ASERVER_PUB_KEY = authenticationServerPubKeyFilePathTextBox.Text;
 
                 string encryptedXML2048BitKey = readFromFile(PATH_FOR_USER_KEY_PAIR);
-                int x = 5;
-                x = x + x;
+                byte[] byteArrayOfEncryptedXML2048BitKey = myCrypto.StringToByteArray(encryptedXML2048BitKey);
+                string stringVersionOfEncryptedXML2048BitKey = Encoding.Default.GetString(byteArrayOfEncryptedXML2048BitKey);             
                 try
                 {
                     // TODO: the xml is not correctly get from the 
-                    decryptedXML2048BitKey = myCrypto.decryptWithAES128(encryptedXML2048BitKey, KEY, IV);
-                    decryptedXml2048BitKeyString = myCrypto.generateHexStringFromByteArray(decryptedXML2048BitKey);
+                    decryptedXML2048BitKey = myCrypto.decryptWithAES128(stringVersionOfEncryptedXML2048BitKey, KEY, IV);
+                    decryptedXml2048BitKeyString = Encoding.Default.GetString(decryptedXML2048BitKey);
                 }
                 catch (Exception exc )
                 { monitor.AppendText(exc.ToString());  }

@@ -35,7 +35,6 @@ namespace CS432TermProject
         RichTextBox Monitor;
 
         // Threads
-        Thread thrReceive;
         Thread thrMessage;
 
         private MyCryptography myCrypto;

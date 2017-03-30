@@ -38,11 +38,14 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lbConnectedUsers = new System.Windows.Forms.ListBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tbMainRepository = new System.Windows.Forms.TextBox();
+            this.btnChooseMainRepository = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tbPortNumber
             // 
-            this.tbPortNumber.Location = new System.Drawing.Point(34, 43);
+            this.tbPortNumber.Location = new System.Drawing.Point(26, 434);
             this.tbPortNumber.Name = "tbPortNumber";
             this.tbPortNumber.Size = new System.Drawing.Size(114, 22);
             this.tbPortNumber.TabIndex = 0;
@@ -50,7 +53,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(34, 20);
+            this.label1.Location = new System.Drawing.Point(23, 404);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(34, 17);
             this.label1.TabIndex = 1;
@@ -58,7 +61,7 @@
             // 
             // btnStartServer
             // 
-            this.btnStartServer.Location = new System.Drawing.Point(34, 81);
+            this.btnStartServer.Location = new System.Drawing.Point(337, 426);
             this.btnStartServer.Name = "btnStartServer";
             this.btnStartServer.Size = new System.Drawing.Size(114, 30);
             this.btnStartServer.TabIndex = 2;
@@ -68,16 +71,16 @@
             // 
             // rtbMonitor
             // 
-            this.rtbMonitor.Location = new System.Drawing.Point(451, 40);
+            this.rtbMonitor.Location = new System.Drawing.Point(476, 40);
             this.rtbMonitor.Name = "rtbMonitor";
-            this.rtbMonitor.Size = new System.Drawing.Size(436, 280);
+            this.rtbMonitor.Size = new System.Drawing.Size(436, 420);
             this.rtbMonitor.TabIndex = 3;
             this.rtbMonitor.Text = "";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(448, 20);
+            this.label2.Location = new System.Drawing.Point(473, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 17);
             this.label2.TabIndex = 4;
@@ -85,7 +88,7 @@
             // 
             // btnBrowse
             // 
-            this.btnBrowse.Location = new System.Drawing.Point(275, 290);
+            this.btnBrowse.Location = new System.Drawing.Point(337, 290);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(114, 30);
             this.btnBrowse.TabIndex = 5;
@@ -97,7 +100,7 @@
             // 
             this.tbServerPrivateKeyPath.Location = new System.Drawing.Point(26, 298);
             this.tbServerPrivateKeyPath.Name = "tbServerPrivateKeyPath";
-            this.tbServerPrivateKeyPath.Size = new System.Drawing.Size(219, 22);
+            this.tbServerPrivateKeyPath.Size = new System.Drawing.Size(275, 22);
             this.tbServerPrivateKeyPath.TabIndex = 6;
             // 
             // label3
@@ -113,25 +116,54 @@
             // 
             this.lbConnectedUsers.FormattingEnabled = true;
             this.lbConnectedUsers.ItemHeight = 16;
-            this.lbConnectedUsers.Location = new System.Drawing.Point(188, 43);
+            this.lbConnectedUsers.Location = new System.Drawing.Point(26, 42);
             this.lbConnectedUsers.Name = "lbConnectedUsers";
-            this.lbConnectedUsers.Size = new System.Drawing.Size(226, 196);
+            this.lbConnectedUsers.Size = new System.Drawing.Size(425, 212);
             this.lbConnectedUsers.TabIndex = 8;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(185, 20);
+            this.label4.Location = new System.Drawing.Point(23, 20);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(117, 17);
             this.label4.TabIndex = 9;
             this.label4.Text = "Connected Users";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(23, 336);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(175, 17);
+            this.label5.TabIndex = 10;
+            this.label5.Text = "Main Repository Of Server";
+            // 
+            // tbMainRepository
+            // 
+            this.tbMainRepository.Location = new System.Drawing.Point(26, 370);
+            this.tbMainRepository.Name = "tbMainRepository";
+            this.tbMainRepository.Size = new System.Drawing.Size(275, 22);
+            this.tbMainRepository.TabIndex = 11;
+            // 
+            // btnChooseMainRepository
+            // 
+            this.btnChooseMainRepository.Location = new System.Drawing.Point(337, 362);
+            this.btnChooseMainRepository.Name = "btnChooseMainRepository";
+            this.btnChooseMainRepository.Size = new System.Drawing.Size(114, 30);
+            this.btnChooseMainRepository.TabIndex = 12;
+            this.btnChooseMainRepository.Text = "Browse";
+            this.btnChooseMainRepository.UseVisualStyleBackColor = true;
+            this.btnChooseMainRepository.Click += new System.EventHandler(this.btnChooseMainRepository_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(902, 336);
+            this.ClientSize = new System.Drawing.Size(934, 485);
+            this.Controls.Add(this.btnChooseMainRepository);
+            this.Controls.Add(this.tbMainRepository);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.lbConnectedUsers);
             this.Controls.Add(this.label3);
@@ -162,6 +194,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ListBox lbConnectedUsers;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox tbMainRepository;
+        private System.Windows.Forms.Button btnChooseMainRepository;
     }
 }
 

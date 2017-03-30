@@ -11,7 +11,6 @@ namespace CS432ProjectAuthenticationServer
         public const string USERNAME = "101";
         public const string READY_TO_ACCEPT_USERNAME = "102";
         public const string USER_ALREADY_CONNECTED = "103";
-        public const string USER_ACCEPTED_TO_CONNECT = "104";
 
         public const string AUTHENTICATION_REQUEST = "105";
         public const string AUTHENTICATION_REQUEST_OK = "106";

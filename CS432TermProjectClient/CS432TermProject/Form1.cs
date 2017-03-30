@@ -33,7 +33,7 @@ namespace CS432TermProject
         public static string password;
 
         // Client Monitor
-        RichTextBox Monitor;
+        RichTextBox monitor;
 
         // Threads
         Thread thrMessage;
@@ -52,6 +52,7 @@ namespace CS432TermProject
 
         public Form1()
         {
+            Control.CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
             connectButton = (Button)btnConnect;
             usernameTextBox = (TextBox)tbUserName;
@@ -60,9 +61,10 @@ namespace CS432TermProject
             authenticationServerPortTextBox = (TextBox)tbAuthenticationServerPort;
             userKeyPairFilePathTextBox = (TextBox)tbUserKeyPairFile;
             authenticationServerPubKeyFilePathTextBox = (TextBox)tbAServerPubKeyFile;
-            Monitor = (RichTextBox) rtbMonitor;
+            monitor = (RichTextBox) rtbMonitor;
             disconnectButton = (Button)btnDisconnect;
             disconnectButton.Enabled = false;
+
         }
 
 
@@ -96,30 +98,31 @@ namespace CS432TermProject
                 byte[] KEY = new byte[16];
                 // The first 16 bytes are the key for decryption of encrypted Private Key of User
                 Array.Copy(hashedPasswordWithSHA256, 0, KEY, 0, 16);
+                monitor.AppendText("The AES Key is:" + myCrypto.generateHexStringFromByteArray(KEY) +"\n");
                 
 
                 byte[] IV = new byte[16];
                 // The last 16 bytes of the hashed password will be the Initialization Vector for decryption.
                 Array.Copy(hashedPasswordWithSHA256, 16, IV, 0, 16);
-                
+                monitor.AppendText("The AES IV is:" + myCrypto.generateHexStringFromByteArray(IV) + "\n");
 
                 // Get the paths from textboxes 
                 PATH_FOR_USER_KEY_PAIR = userKeyPairFilePathTextBox.Text;
                 PATH_FOR_AUTHENTICATION_SERVER_PUB_KEY = authenticationServerPubKeyFilePathTextBox.Text;
 
                 string encryptedXML2048BitKey = readFromFile(PATH_FOR_USER_KEY_PAIR);
-                Monitor.AppendText("Encrypted XML 2048 Bit RSA Private_Public Key Pair:\n " + encryptedXML2048BitKey +"\n");
+                monitor.AppendText("Encrypted XML 2048 Bit RSA Private_Public Key Pair:\n " + encryptedXML2048BitKey +"\n");
                 byte[] byteArrayOfEncryptedXML2048BitKey = myCrypto.StringToByteArray(encryptedXML2048BitKey);
-                Monitor.AppendText("Hex string of encrypted XML 2048 Bit RSA Private_Public Key Pair: \n"
+                monitor.AppendText("Hex string of encrypted XML 2048 Bit RSA Private_Public Key Pair: \n"
                         + myCrypto.generateHexStringFromByteArray(byteArrayOfEncryptedXML2048BitKey ) + "\n");
                 string stringVersionOfEncryptedXML2048BitKey = Encoding.Default.GetString(byteArrayOfEncryptedXML2048BitKey);
                 try {
                     decryptedXML2048BitKey = myCrypto.decryptWithAES128(stringVersionOfEncryptedXML2048BitKey, KEY, IV);
-                    Monitor.AppendText("Hex String of decrypted XML 2048 Bit Public_Private Key Pair: \n" 
+                    monitor.AppendText("Hex String of decrypted XML 2048 Bit Public_Private Key Pair: \n" 
                             + myCrypto.generateHexStringFromByteArray(decryptedXML2048BitKey) +"\n");
                     decryptedXml2048BitKeyString = Encoding.Default.GetString(decryptedXML2048BitKey);
-                    Monitor.AppendText("String version of decrypted XML 2048 Bit Public_Private Key Pair: \n"
-                            + decryptedXml2048BitKeyString + "\n");
+                    //monitor.AppendText("String version of decrypted XML 2048 Bit Public_Private Key Pair: \n"
+                           // + decryptedXml2048BitKeyString + "\n");
 
                 }
                 catch (Exception ex)
@@ -163,7 +166,7 @@ namespace CS432TermProject
                             usernameTextBox.Enabled = true;
                             authenticationServerPubKeyFilePathTextBox.Enabled = true;
                             userKeyPairFilePathTextBox.Enabled = true;
-                            throw (new Exception("Ip or Port numbers may be wrong"));                            
+                            throw (new Exception("IP or Port numbers may be wrong"));                            
                         }
                         // Changing UI
                         
@@ -256,7 +259,10 @@ namespace CS432TermProject
 
                 case MessageNumber.STARTED_CHALLENGE_RESPONSE:
                     SendMessageNumber(MessageNumber.STARTED_CHALLENGE_RESPONSE_OK);
+                    monitor.AppendText("Server started challenge-response protocol.\n");
                     receivedRandomNumber = receiveRandomNumber();
+                    monitor.AppendText("Random Number from Server is: \n" 
+                             + myCrypto.generateHexStringFromByteArray(receivedRandomNumber) +"\n" );
                     SendMessageNumber(MessageNumber.RECEIVED_RANDOM_NUMBER_SUCCESSFULLY);
                     break;
 
@@ -265,14 +271,20 @@ namespace CS432TermProject
                     break;
 
                 case MessageNumber.WILL_SEND_SIGNED_RANDOM_NUMBER_OK:
+                    monitor.AppendText("Will send signed random number\n");
                     byte[] signedRandomNumber = myCrypto.signWithRSA(myCrypto.generateHexStringFromByteArray(receivedRandomNumber), 
                         2048, decryptedXml2048BitKeyString );
+                    monitor.AppendText("signed random number is \n" 
+                            + myCrypto.generateHexStringFromByteArray(signedRandomNumber) +"\n" );
                     SendMessage(Encoding.Default.GetString(signedRandomNumber));
                     break;
 
                 case MessageNumber.WILL_SEND_SIGNED_ANSWER_MESSAGE:
                     SendMessageNumber(MessageNumber.WILL_SEND_SIGNED_ANSWER_MESSAGE_OK);
+                    monitor.AppendText("Server will send signed message \n");
                     byte [] signedMessageNumber = receiveSignedMessageNumber();
+                    monitor.AppendText("Signed message number is: \n" 
+                            + myCrypto.generateHexStringFromByteArray(signedMessageNumber) + "\n");
                     bool authenticatonPositiveResult = myCrypto.verifyWithRSA(MessageNumber.USER_AUTHENTICATED ,2048, 
                             authenticationServerPublicKeyXmlString, signedMessageNumber);
 
@@ -282,11 +294,11 @@ namespace CS432TermProject
                     // if both of them are false. Than this message is not from the server.
                     if(authenticatonPositiveResult)
                     { // So the server authenticated the client. Client knows this message comes from the server he/she spokes.
-                        Monitor.AppendText("Client connected to the server\n");
+                        monitor.AppendText("User is authenticated\n");
                     }
                     else if(authenticationNegativeResult)
                     { // The server did not give permission to access. Client knows this message comes from the server he/she spokes.
-                        Monitor.AppendText("Access denied\n");
+                        monitor.AppendText("Access denied\n");
                         if (client.Connected)
                         {
                             connected = false;
@@ -295,16 +307,13 @@ namespace CS432TermProject
                     }
                     else
                     {
-                        Monitor.AppendText("Received an unexpected message\n");
+                        monitor.AppendText("Received an unexpected message\n");
                     }
 
                     break;
-                case MessageNumber.USER_ACCEPTED_TO_CONNECT:
-                    Monitor.AppendText("User is connected\n");
-                    break;
 
                 case MessageNumber.USER_ALREADY_CONNECTED:
-                    Monitor.AppendText("User is already connected\n");
+                    monitor.AppendText("User is already connected\n");
                     connectButton.Enabled = true;
                     authenticationServerIPTextBox.Enabled = true;
                     authenticationServerPortTextBox.Enabled = true;
@@ -315,11 +324,11 @@ namespace CS432TermProject
                     break;
 
                 case MessageNumber.USER_AUTHENTICATED:
-                    Monitor.AppendText("User is authenticated\n");
+                    monitor.AppendText("User is authenticated\n");
                     break;
 
                 case MessageNumber.USER_REJECTED_TO_AUTHENTICATE:
-                    Monitor.AppendText("User is not authenticated\n");
+                    monitor.AppendText("User is not authenticated\n");
                     break;
 
                 case MessageNumber.WILL_DISCONNECT_OK:
@@ -376,7 +385,7 @@ namespace CS432TermProject
             authenticationServerPubKeyFilePathTextBox.Enabled = true;
             userKeyPairFilePathTextBox.Enabled = true;
 
-            Monitor.AppendText("Server closed itself");
+            monitor.AppendText("Server closed itself");
         }
 
         private void btnDisconnect_Click(object sender, EventArgs e)
@@ -414,27 +423,30 @@ namespace CS432TermProject
                 userKeyPairFilePathTextBox.Enabled = true;
                 // Clear the monitor maybe?
 
-                Monitor.Clear();
+                monitor.Clear();
 
                 
             }
             else
             {
-                Monitor.AppendText("Client is already not connected\n ");
+                monitor.AppendText("Client is already not connected\n ");
             }
         }
 
-      
+
         // This function is called when user want to close the program by clicking on cross sign of the form.
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {         
-            if (client.Connected)
-            {
-                connected = false;
-                SendMessageNumber(MessageNumber.WILL_DISCONNECT);
-                client.Disconnect(false);
+        {
+            if (client != null) { 
+                if (client.Connected)
+                {
+                    connected = false;
+                    SendMessageNumber(MessageNumber.WILL_DISCONNECT);
+                    client.Disconnect(false);
+                }
             }
         }
+
 
         public void showNotificationBalloon(string message)
         {

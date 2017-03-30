@@ -50,14 +50,14 @@
             // 
             // tbUserName
             // 
-            this.tbUserName.Location = new System.Drawing.Point(22, 29);
+            this.tbUserName.Location = new System.Drawing.Point(22, 197);
             this.tbUserName.Name = "tbUserName";
             this.tbUserName.Size = new System.Drawing.Size(136, 22);
             this.tbUserName.TabIndex = 0;
             // 
             // tbPassword
             // 
-            this.tbPassword.Location = new System.Drawing.Point(22, 89);
+            this.tbPassword.Location = new System.Drawing.Point(22, 266);
             this.tbPassword.Name = "tbPassword";
             this.tbPassword.Size = new System.Drawing.Size(136, 22);
             this.tbPassword.TabIndex = 1;
@@ -65,14 +65,14 @@
             // 
             // tbAuthenticationServerIP
             // 
-            this.tbAuthenticationServerIP.Location = new System.Drawing.Point(204, 29);
+            this.tbAuthenticationServerIP.Location = new System.Drawing.Point(204, 197);
             this.tbAuthenticationServerIP.Name = "tbAuthenticationServerIP";
             this.tbAuthenticationServerIP.Size = new System.Drawing.Size(225, 22);
             this.tbAuthenticationServerIP.TabIndex = 2;
             // 
             // tbAuthenticationServerPort
             // 
-            this.tbAuthenticationServerPort.Location = new System.Drawing.Point(204, 89);
+            this.tbAuthenticationServerPort.Location = new System.Drawing.Point(204, 266);
             this.tbAuthenticationServerPort.Name = "tbAuthenticationServerPort";
             this.tbAuthenticationServerPort.Size = new System.Drawing.Size(225, 22);
             this.tbAuthenticationServerPort.TabIndex = 3;
@@ -80,7 +80,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 9);
+            this.label1.Location = new System.Drawing.Point(19, 165);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(73, 17);
             this.label1.TabIndex = 4;
@@ -89,7 +89,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(19, 69);
+            this.label2.Location = new System.Drawing.Point(19, 235);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(69, 17);
             this.label2.TabIndex = 5;
@@ -98,7 +98,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(201, 9);
+            this.label3.Location = new System.Drawing.Point(201, 165);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(66, 17);
             this.label3.TabIndex = 6;
@@ -107,7 +107,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(201, 69);
+            this.label4.Location = new System.Drawing.Point(201, 235);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(88, 17);
             this.label4.TabIndex = 7;
@@ -115,7 +115,7 @@
             // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(22, 138);
+            this.btnConnect.Location = new System.Drawing.Point(22, 331);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(136, 32);
             this.btnConnect.TabIndex = 8;
@@ -142,14 +142,14 @@
             // 
             // tbAServerPubKeyFile
             // 
-            this.tbAServerPubKeyFile.Location = new System.Drawing.Point(22, 331);
+            this.tbAServerPubKeyFile.Location = new System.Drawing.Point(22, 111);
             this.tbAServerPubKeyFile.Name = "tbAServerPubKeyFile";
             this.tbAServerPubKeyFile.Size = new System.Drawing.Size(237, 22);
             this.tbAServerPubKeyFile.TabIndex = 11;
             // 
             // btnBrowseAServerPublicKey
             // 
-            this.btnBrowseAServerPublicKey.Location = new System.Drawing.Point(293, 326);
+            this.btnBrowseAServerPublicKey.Location = new System.Drawing.Point(293, 106);
             this.btnBrowseAServerPublicKey.Name = "btnBrowseAServerPublicKey";
             this.btnBrowseAServerPublicKey.Size = new System.Drawing.Size(136, 32);
             this.btnBrowseAServerPublicKey.TabIndex = 12;
@@ -160,7 +160,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(19, 302);
+            this.label5.Location = new System.Drawing.Point(19, 81);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(240, 17);
             this.label5.TabIndex = 13;
@@ -169,7 +169,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(19, 223);
+            this.label6.Location = new System.Drawing.Point(19, 20);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(121, 17);
             this.label6.TabIndex = 16;
@@ -177,7 +177,7 @@
             // 
             // btnBrowseUserKeyPairFile
             // 
-            this.btnBrowseUserKeyPairFile.Location = new System.Drawing.Point(293, 247);
+            this.btnBrowseUserKeyPairFile.Location = new System.Drawing.Point(293, 41);
             this.btnBrowseUserKeyPairFile.Name = "btnBrowseUserKeyPairFile";
             this.btnBrowseUserKeyPairFile.Size = new System.Drawing.Size(136, 32);
             this.btnBrowseUserKeyPairFile.TabIndex = 15;
@@ -187,14 +187,14 @@
             // 
             // tbUserKeyPairFile
             // 
-            this.tbUserKeyPairFile.Location = new System.Drawing.Point(22, 252);
+            this.tbUserKeyPairFile.Location = new System.Drawing.Point(22, 46);
             this.tbUserKeyPairFile.Name = "tbUserKeyPairFile";
             this.tbUserKeyPairFile.Size = new System.Drawing.Size(237, 22);
             this.tbUserKeyPairFile.TabIndex = 14;
             // 
             // btnDisconnect
             // 
-            this.btnDisconnect.Location = new System.Drawing.Point(293, 138);
+            this.btnDisconnect.Location = new System.Drawing.Point(293, 331);
             this.btnDisconnect.Name = "btnDisconnect";
             this.btnDisconnect.Size = new System.Drawing.Size(136, 32);
             this.btnDisconnect.TabIndex = 17;

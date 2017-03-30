@@ -79,9 +79,10 @@ namespace CS432ProjectAuthenticationServer
             return authenticated;
         }
 
+        // To show the related info in connected users list
         public override string ToString()
         {
-            return username + " "+ connectionTime;
+            return "c.name: "+ username + " date: "+ connectionTime + " IP-Port " + socket.RemoteEndPoint;
         }
 
         public void setConnectionTime(string time)

@@ -22,9 +22,12 @@ namespace CS432ProjectAuthenticationServer
         static TextBox portNumberTextBox;
         static Button serverStartButton;
         static Button browseServerPrivateKeyFileButton;
+        static Button browseMainRepositoryButton;
         static TextBox serverPublicPrivateKeyFilePathTextBox;
+        static TextBox serverMainRepositoryTextBox;
         static int PortNumber;
 
+        // The list of the connected clients
         public ListBox userListBox;
 
         static Socket possibleClient;
@@ -35,9 +38,9 @@ namespace CS432ProjectAuthenticationServer
 
         Thread thrAccept;
 
-        static bool listening = false;
         static bool terminating = false;
         static bool accept = true;
+
 
         public static string serverDirectoryPath;
         private string SERVER_PUB_PRIVATE_KEY_PAIR_FILE_PATH;
@@ -58,27 +61,32 @@ namespace CS432ProjectAuthenticationServer
             browseServerPrivateKeyFileButton = (Button)btnBrowse;
             serverPublicPrivateKeyFilePathTextBox = (TextBox)tbServerPrivateKeyPath;
             userListBox = (ListBox)lbConnectedUsers;
+            browseMainRepositoryButton = (Button)btnChooseMainRepository;
+            serverMainRepositoryTextBox = (TextBox)tbMainRepository;
         }
 
         private void btnStartServer_Click(object sender, EventArgs e)
         {
-            if (!serverPublicPrivateKeyFilePathTextBox.Text.Equals("") && File.Exists(serverPublicPrivateKeyFilePathTextBox.Text)) // The server choosed a file path
+            if (!serverPublicPrivateKeyFilePathTextBox.Text.Equals("") 
+                 && File.Exists(serverPublicPrivateKeyFilePathTextBox.Text)
+                 && !serverMainRepositoryTextBox.Text.Equals("") 
+                 && Directory.Exists(serverMainRepositoryTextBox.Text)
+                 && !portNumberTextBox.Text.Equals("")) // The server choosed a file path and main repository directory
             {
+                // Change the UI
+                serverStartButton.Enabled = false;
+
                 PortNumber = Convert.ToInt32(portNumberTextBox.Text);
                 // Will create a server directory if it does not exists
-                serverDirectoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                serverDirectoryPath = serverDirectoryPath + "/Server";
+                serverDirectoryPath = serverMainRepositoryTextBox.Text;
 
                 // Read the public_private key of server as a xml string
                 SERVER_PUB_PRIVATE_KEY_PAIR_FILE_PATH = serverPublicPrivateKeyFilePathTextBox.Text;
                 serverPublicPrivateKeyXmlString = File.ReadAllText(SERVER_PUB_PRIVATE_KEY_PAIR_FILE_PATH);
-
-                if (!Directory.Exists(serverDirectoryPath))
-                {
-                    Directory.CreateDirectory(serverDirectoryPath);
-                }
-
+               
+                server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                 server.Bind(new IPEndPoint(IPAddress.Any, PortNumber));
+                //server.SetSocketOption(Socket)
                 monitor.AppendText("Started listening for incoming connections.\n");
 
                 server.Listen(3);
@@ -87,7 +95,7 @@ namespace CS432ProjectAuthenticationServer
             }
             else // The server did not choose a path for its private key file.
             {
-                showNotificationBalloon("Please choose a private key file ");
+                showNotificationBalloon("Please fill all the inputs correctly ");
             }
         }
 
@@ -146,7 +154,6 @@ namespace CS432ProjectAuthenticationServer
                     string newmessage = Encoding.Default.GetString(buffer);
                     HandleMessage(newmessage, currentUser);
 
-                    Console.Write("Client: " + newmessage + "\r\n");
                 }
                 catch
                 {
@@ -175,7 +182,9 @@ namespace CS432ProjectAuthenticationServer
                     // Somebody wants to send its username. Get its user name and
                     sendMessageNumber(MessageNumber.READY_TO_ACCEPT_USERNAME, user);
                     ReceiveUserName(user);
+                    monitor.AppendText("A client named " + user.getUserName() + "is trying to connect \n");
                     sendMessageNumber(MessageNumber.STARTED_CHALLENGE_RESPONSE, user);
+                    monitor.AppendText("Started challenge-response protocol with the client " + user.getUserName() + "\n");
                     break;
 
                 case MessageNumber.STARTED_CHALLENGE_RESPONSE_OK:
@@ -183,18 +192,27 @@ namespace CS432ProjectAuthenticationServer
                     byte[] randomNumber = new byte[128];
                     rngCsp.GetBytes(randomNumber);
                     string encodedRandomNumber = Encoding.Default.GetString(randomNumber);
+                    monitor.AppendText("Sent a random number to client " + user.getUserName() + "\n");
+                    monitor.AppendText("Random number is:\n " + MyCrypto.generateHexStringFromByteArray(randomNumber) +"\n");
                     user.setRandomNumberSent(randomNumber);
                     sendMessage(encodedRandomNumber, user);
                     break;
 
                 case MessageNumber.WILL_SEND_SIGNED_RANDOM_NUMBER:
                     sendMessageNumber(MessageNumber.WILL_SEND_SIGNED_RANDOM_NUMBER_OK, user);
-                    
-                    byte [] signedRandomNumber = receiveSignedRandomNumber(user);
+                    monitor.AppendText("Client " + user.getUserName() + " will send signed random number back \n");
+
+                    byte [] signedRandomNumber = receiveSignedRandomNumber(user);                
+                    monitor.AppendText("Signed random number from client " + user.getUserName() + " is:\n"
+                            + MyCrypto.generateHexStringFromByteArray(signedRandomNumber) +"\n");
+
                     byte[] randomNumberSent = user.getRandomNumberSentToUser();
-                    string XmlString = File.ReadAllText(serverDirectoryPath + "/" + user.getUserName() + "_pub.txt" );
+                    string clientPublicKeyXmlString = File.ReadAllText(serverDirectoryPath + "/" + user.getUserName() + "_pub.txt" );
+                    monitor.AppendText("Public Key of client " + user.getUserName() + " is \n" + clientPublicKeyXmlString +"\n");
+                    monitor.AppendText("Random number sent to the client " + user.getUserName() + " was:\n "
+                            + MyCrypto.generateHexStringFromByteArray(user.getRandomNumberSentToUser() )+"\n" );
                     bool result =MyCrypto.verifyWithRSA(MyCrypto.generateHexStringFromByteArray( randomNumberSent),
-                            2048, XmlString, signedRandomNumber );
+                            2048, clientPublicKeyXmlString, signedRandomNumber );
                     user.setAuthenticated(result);
                     sendMessageNumber(MessageNumber.WILL_SEND_SIGNED_ANSWER_MESSAGE, user);
                     break;
@@ -208,7 +226,9 @@ namespace CS432ProjectAuthenticationServer
                         // Now the user is authenticated and will be added to the user list.
                         signedMessageNumber = MyCrypto.signWithRSA(MessageNumber.USER_AUTHENTICATED, 2048,
                                 serverPublicPrivateKeyXmlString);
-                        monitor.AppendText("A client named " + user.getUserName() + " is accepted \n");
+                        monitor.AppendText("The signed message to the client " + user.getUserName() + " is: \n"
+                                + MyCrypto.generateHexStringFromByteArray(signedMessageNumber) +"\n");
+                        monitor.AppendText("The client named " + user.getUserName() + " is authenticated \n");
                         string connectionTime = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
                         user.setConnectionTime(connectionTime);
                         userList.Add(user);
@@ -220,6 +240,7 @@ namespace CS432ProjectAuthenticationServer
                     {
                         signedMessageNumber = MyCrypto.signWithRSA(MessageNumber.USER_REJECTED_TO_AUTHENTICATE, 2048,
                                 serverPublicPrivateKeyXmlString);
+                        monitor.AppendText("The client named " + user.getUserName() + " is rejected to authenticate \n");
                     }
                     sendMessage(Encoding.Default.GetString(signedMessageNumber), user);
                     break;
@@ -234,7 +255,7 @@ namespace CS432ProjectAuthenticationServer
                     socketList.Remove(user.getSocket());
                     userList.Remove(user);
                     user.getSocket().Close();                   
-                    monitor.AppendText("Client " + user.getUserName() + " disconnected\n");
+                    monitor.AppendText("Client " + user.getUserName() + " disconnected \n");
                     break;
 
             }
@@ -326,13 +347,25 @@ namespace CS432ProjectAuthenticationServer
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
+
             for (int i = 0; i< userList.Count;i++)
             {
                 sendMessageNumber(MessageNumber.SERVER_WILL_CLOSE, userList[i]);
                 userList[i].getSocket().Close();             
             }
-            if (server.Connected) server.Close();
+            if (server.Connected) { server.Close(); }
 
+        }
+
+        private void btnChooseMainRepository_Click(object sender, EventArgs e)
+        {
+            string folderPath = "";
+            FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                folderPath = folderBrowserDialog1.SelectedPath;
+            }
+            serverMainRepositoryTextBox.Text = folderPath;
         }
     }
 }
